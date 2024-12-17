@@ -1,7 +1,7 @@
 """This module contains the logic of the draw."""
 
-import random
 import logging
+import random
 
 from . import settings
 

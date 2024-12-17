@@ -1,19 +1,23 @@
 """This module handles the notification process of the result of a draw."""
 
 import logging
+from pathlib import Path
 
 import httpx
 from jinja2 import Environment, FileSystemLoader, Template
 
 from . import settings
-from .models import Player, Game
 from .draws import Draw
+from .models import Game, Player
 
 logger = logging.getLogger(__name__)
 
 
 def single_notification(
-    game: Game, template: Template, players: tuple[Player, Player]
+    game: Game,
+    template: Template,
+    players: tuple[Player, Player],
+    dry: bool = False,
 ) -> None:
     """Sends a single notification."""
 
@@ -26,20 +30,18 @@ def single_notification(
         to_name=_to.name,
     )
 
-    # set to email
-    destinies = []
-    if settings.debug and settings.debug_to_email:
-        destinies = [settings.debug_to_email]
+    if dry:
+        print("From:", game.notification_from)
+        print("To:", _from.email)
+        print("Subject:", game.notification_subject)
+        print(content)
     else:
-        destinies = [_from.email]
-
-    if destinies:
         response = httpx.post(
             f"{settings.mailgun_api_url}/messages",
             auth=("api", settings.mailgun_api_key.get_secret_value()),
             data={
                 "from": game.notification_from,
-                "to": destinies,
+                "to": [_from.email],
                 "subject": game.notification_subject,
                 "html": content,
             },
@@ -47,14 +49,15 @@ def single_notification(
         response.raise_for_status()
 
 
-def notify(game: Game, draw: Draw) -> None:
+def notify(game: Game, draw: Draw, dry: bool = False) -> None:
     """Notify the result of the draw in the game."""
 
     # load template
-    environment = Environment(loader=FileSystemLoader("templates/"))
+    templates_path = Path(__file__).parent / "templates"
+    environment = Environment(loader=FileSystemLoader(templates_path))
     template = environment.get_template(game.notification_template)
 
     # iterate over solution
     for _from_name, _to_name in draw.solution:
         players = (game.players[_from_name], game.players[_to_name])
-        single_notification(game=game, template=template, players=players)
+        single_notification(game=game, template=template, players=players, dry=dry)

@@ -1,7 +1,7 @@
 """Package with all the implementation for execute a Secret Santa game."""
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -14,10 +14,6 @@ class Settings(BaseSettings):
     # mailgun settings
     mailgun_api_url: str
     mailgun_api_key: SecretStr
-
-    # debug
-    debug: bool = False
-    debug_to_email: str | None = None
 
     # attempts limit
     limit: int = 30

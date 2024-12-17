@@ -1,6 +1,7 @@
 """This module contains the models and some tools for using them."""
 
 from pathlib import Path
+
 import yaml
 
 try:
