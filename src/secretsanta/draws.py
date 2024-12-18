@@ -20,7 +20,7 @@ class Draw:
     solution: list[tuple[str, str]]
 
     # available participants
-    available: set[str]
+    available: list[str]
 
     # list of pair of participants that can't be assigned
     exclusions: list[tuple[str, str]]
@@ -29,12 +29,15 @@ class Draw:
         self,
         participants: list[str],
         exclusions: list[tuple[str, str]] | None = None,
+        seed: str | None = None,
     ):
         """Initializes the draw."""
         self.participants = participants
         self.solution = []
-        self.available = set(participants)
+        self.available = participants[:]
         self.exclusions = exclusions or []
+        if seed:
+            random.seed(seed)
 
     def __len__(self) -> int:
         """The len of the draw is the len of the current solution."""
@@ -59,7 +62,7 @@ class Draw:
     def pick(self) -> str:
         """Selects the next possible participant."""
         if not self.solution:
-            selected = random.choice(list(self.available))
+            selected = random.choice(self.available)
             self.available.remove(selected)
         else:
             selected = self.solution[-1][1]  # select the last node in the solution
@@ -74,12 +77,12 @@ class Draw:
     def rollback(self, candidate: tuple[str, str]) -> None:
         """Undoes the candidate."""
         self.solution.remove(candidate)
-        if self.available:
-            self.available.add(candidate[1])
+        if self.available and candidate[1] not in self.available:
+            self.available.append(candidate[1])
 
     def choices(self) -> list[str]:
         """Shuffle list of choices."""
-        choices = list(self.available)
+        choices = self.available[:]
         random.shuffle(choices)
         return choices
 
@@ -122,7 +125,7 @@ class Draw:
     def reset(self) -> None:
         """Restores the draw to the initial status."""
         self.solution = []
-        self.available = set(self.participants)
+        self.available = self.participants[:]
 
     def run(self) -> None:
         """Executes the backtrack algorithm until gets a result."""

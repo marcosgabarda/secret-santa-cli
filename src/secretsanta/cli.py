@@ -23,6 +23,12 @@ def app() -> None:
         action="store_true",
         help="Simulates the game, and doesn't sends the result.",
     )
+    parser.add_argument(
+        "--seed",
+        type=str,
+        help="Explicit the seed for the random choices.",
+        default=None,
+    )
     args = parser.parse_args()
     config_file = Path(args.config)
     if not config_file.is_file():
@@ -31,7 +37,11 @@ def app() -> None:
     # creates the game
     game = Game.create(config_file=config_file)
     # runs the draw
-    draw = Draw(participants=game.participants(), exclusions=game.exclusions)
+    draw = Draw(
+        participants=game.participants(),
+        exclusions=game.exclusions,
+        seed=args.seed,
+    )
     draw.run()
     # notify the results
     notify(game=game, draw=draw, dry=args.dry)
