@@ -1,6 +1,6 @@
 # Secret Santa CLI
 
-This is a Secret Santa gane CLI tool. It takes a `.yaml` file to configure the game, setting up the participants and the exclusions.
+This is a Secret Santa game CLI tool. It takes a `.yaml` file to configure the game, setting up the participants and the exclusions.
 
 Then, uses [Mailgun API](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/) to send the results of the draw via email.
 
