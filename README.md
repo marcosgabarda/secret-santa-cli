@@ -1,8 +1,10 @@
 # Secret Santa CLI
 
-This is a Secret Santa gane CLI tool. It takes a `.yaml` file to configure the game, setting up the participants and the exclusions.
+This is a Secret Santa gane CLI tool. It takes a `.yaml` file to configure the game,
+setting up the participants and the exclusions.
 
-Then, uses [Mailgun API](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/) to send the results of the draw via email.
+Then, uses [Mailgun API](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/)
+to send the results of the draw via email.
 
 ## Game config
 
@@ -11,8 +13,16 @@ Then, uses [Mailgun API](https://documentation.mailgun.com/docs/mailgun/user-man
 secret-santa:
   name: "Secret Santa Game 2024"
   notification:
+    from: "Secret Santa <secretsanta@example.com>"
     subject: "Secret Santa result!"  # Subject of the email
-    template: "notification.html"  # Jinja2 template name from templates folder. Optional.
+    template_file: "notification.html"  # Jinja2 template name from templates folder. Optional.
+    # You can also specify the template directly in the config file, and this template,
+    # if defined, would be used as first option
+    template: |
+        <p>Hello {{ from_name }},</p>
+        <p>You have been assigned to be the Secret Santa for <strong>{{ to_name }}</strong>!</p>
+        <p>Make sure to keep this a secret and prepare a thoughtful gift.</p>
+        <p>Happy Holidays! 🎅🎁</p>
   participants:
     - name: Alice
       email: alice@example.com
@@ -33,7 +43,8 @@ secret-santa:
 
 ## Environment variables
 
-Some environment variables have to be set in order to use Mailgun API. YOu can also create a local `.env` file with the variables.
+Some environment variables have to be set in order to use Mailgun API. You can also
+create a local `.env` file with the variables.
 
 ```
 # Mailgun configuration
@@ -43,7 +54,8 @@ SANTA_MAILGUN_API_KEY=
 
 ## Usage
 
-This package uses `uv` to handle the dependencies and virtual environment. The script can be executed by running:
+This package uses `uv` to handle the dependencies and virtual environment. The script 
+can be executed by running:
 
 ```bash
 uv run secretsanta <config_yaml_file> [--dry]

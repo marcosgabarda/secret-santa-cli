@@ -29,12 +29,16 @@ class Player(BaseModel):
 class Game(BaseModel):
     """A game game is a set of players."""
 
+    # name of the game
     name: str
 
-    notification_template: str = "notification.html"
-    notification_from: str = "Amigo Invisible <amigoinvisible@mgabarda.com>"
-    notification_subject: str = "Sorteo Amigo Invisible"
+    # notification options for the game
+    notification_template_file: str = "notification.html"
+    notification_from: str = "Secret Santa <secretsanta@example.com>"
+    notification_subject: str = "Secret Santa"
+    notification_template: str | None = None
 
+    # players and exclusions
     players: dict[str, Player]
     exclusions: list[tuple[str, str]]
 
@@ -46,7 +50,7 @@ class Game(BaseModel):
         with config_file.open() as file:
             config = yaml.load(file, Loader=Loader)
 
-        secret_santa_config = config["secret-santa"]
+        secret_santa_config = config["secretsanta"]
 
         # load players
         players = {
@@ -72,11 +76,15 @@ class Game(BaseModel):
         )
 
         # load notification if defined
-        notification_config = secret_santa_config.get("notification")
-        if notification_config.get("template"):
-            game.notification_template = notification_config.get("template")
-        if notification_config.get("subject"):
-            game.notification_subject = notification_config.get("subject")
+        notification_config = secret_santa_config.get("notification", {})
+        game.notification_from = notification_config.get("from", game.notification_from)
+        game.notification_subject = notification_config.get(
+            "subject", game.notification_subject
+        )
+        game.notification_template_file = notification_config.get(
+            "template_file", game.notification_template_file
+        )
+        game.notification_template = notification_config.get("template")
 
         return game
 

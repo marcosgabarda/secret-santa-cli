@@ -34,7 +34,9 @@ def single_notification(
         print("From:", game.notification_from)
         print("To:", _from.email)
         print("Subject:", game.notification_subject)
+        print("---")
         print(content)
+        print("---\n")
     else:
         response = httpx.post(
             f"{settings.mailgun_api_url}/messages",
@@ -53,9 +55,13 @@ def notify(game: Game, draw: Draw, dry: bool = False) -> None:
     """Notify the result of the draw in the game."""
 
     # load template
-    templates_path = Path(__file__).parent / "templates"
-    environment = Environment(loader=FileSystemLoader(templates_path))
-    template = environment.get_template(game.notification_template)
+    if game.notification_template:
+        environment = Environment()
+        template = environment.from_string(game.notification_template)
+    else:
+        templates_path = Path(__file__).parent / "templates"
+        environment = Environment(loader=FileSystemLoader(templates_path))
+        template = environment.get_template(game.notification_template_file)
 
     # iterate over solution
     for _from_name, _to_name in draw.solution:
