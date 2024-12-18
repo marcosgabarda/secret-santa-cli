@@ -11,6 +11,7 @@ from .notifications import notify
 
 def app() -> None:
     """Main app function, entry point for the CLI, using argparse."""
+
     # loads game config
     parser = argparse.ArgumentParser(description="Secret Santa CLI tool.")
     parser.add_argument(
@@ -34,6 +35,7 @@ def app() -> None:
     if not config_file.is_file():
         print("Game config file not found!")
         sys.exit(1)
+
     # creates the game
     game = Game.create(config_file=config_file)
     # runs the draw

@@ -1,6 +1,6 @@
 # Secret Santa CLI
 
-This is a Secret Santa gane CLI tool. It takes a `.yaml` file to configure the game,
+This is a Secret Santa game CLI tool. It takes a `.yaml` file to configure the game,
 setting up the participants and the exclusions.
 
 Then, uses [Mailgun API](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/)
@@ -48,8 +48,8 @@ create a local `.env` file with the variables.
 
 ```
 # Mailgun configuration
-SANTA_MAILGUN_API_URL=
-SANTA_MAILGUN_API_KEY=
+SANTA_MAILGUN_API_URL=https://api.eu.mailgun.net/v3/[your-domain]
+SANTA_MAILGUN_API_KEY=[your-api-key]
 ```
 
 ## Usage
@@ -57,8 +57,8 @@ SANTA_MAILGUN_API_KEY=
 This package uses `uv` to handle the dependencies and virtual environment. The script 
 can be executed by running:
 
-```bash
-uv run secretsanta <config_yaml_file> [--dry]
+```
+uv run secretsanta <config_yaml_file> [--dry] [--seed string]
 ```
 
 - `<config_yaml_file>`:
