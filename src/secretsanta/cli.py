@@ -10,8 +10,7 @@ from .notifications import notify
 
 
 def app() -> None:
-    """Main app function, entry point for the CLI, using argparse."""
-
+    """Create main app function, entry point for the CLI, using argparse."""
     # loads game config
     parser = argparse.ArgumentParser(description="Secret Santa CLI tool.")
     parser.add_argument(

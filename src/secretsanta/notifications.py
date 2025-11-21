@@ -19,8 +19,7 @@ def single_notification(
     players: tuple[Player, Player],
     dry: bool = False,
 ) -> None:
-    """Sends a single notification."""
-
+    """Send a single notification."""
     # from player 0 to player 1
     _from = players[0]
     _to = players[1]
@@ -53,7 +52,6 @@ def single_notification(
 
 def notify(game: Game, draw: Draw, dry: bool = False) -> None:
     """Notify the result of the draw in the game."""
-
     # load template
     if game.notification_template:
         environment = Environment()

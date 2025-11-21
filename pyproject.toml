@@ -1,11 +1,12 @@
 [project]
 name = "secretsanta"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Secret Santa game CLI tool."
 readme = "README.md"
 authors = [{ name = "Marcos Gabarda", email = "hey@marcosgabarda.com" }]
 requires-python = ">=3.10"
 dependencies = [
+    "email-validator>=2.3.0",
     "httpx>=0.28.0",
     "jinja2>=3.1.4",
     "pydantic-settings>=2.7.0",
@@ -18,11 +19,27 @@ license = { text = "MIT License" }
 secretsanta = "secretsanta.cli:app"
 
 [dependency-groups]
-dev = ["ruff>=0.8.1"]
+dev = [
+    "mypy>=1.18.2",
+    "ruff>=0.8.1",
+    "types-pyyaml>=6.0.12.20250915",
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["D", "E", "W", "F", "I", "UP"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+docstring-code-format = true

@@ -9,8 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 class Draw:
-    """This class represents the secret santa draw, handling the participants as a list
-    of strings.
+    """This class represents the secret santa draw.
+
+    Handles the participants as a list of strings.
     """
 
     # list of all the participants
@@ -31,36 +32,43 @@ class Draw:
         exclusions: list[tuple[str, str]] | None = None,
         seed: str | None = None,
     ):
-        """Initializes the draw."""
+        """Initialize the draw."""
         self.participants = participants
         self.solution = []
         self.available = participants[:]
         self.exclusions = exclusions or []
+        print(self.exclusions)
         if seed:
             random.seed(seed)
 
     def __len__(self) -> int:
-        """The len of the draw is the len of the current solution."""
+        """Get the length of the draw.
+
+        This is the length of the current solution.
+        """
         return len(self.solution)
 
     def is_complete(self) -> bool:
-        """Draw is complete when the solution covers all the nodes, except for the
-        transition that completes the cycle.
+        """Check if draw is complete.
+
+        It is when the solution covers all the nodes, except for the transition that
+        completes the cycle.
         """
         return len(self.solution) == len(self.participants) - 1
 
     def is_valid(self, transition: tuple[str, str]) -> bool:
-        """A transition is valid if it is not in the exclusion list and not in the
-        current solution.
+        """Check if A transition is valid.
+
+        If it is not in the exclusion list and not in the current solution.
         """
         return transition not in self.exclusions and transition not in self.solution
 
     def closing_transition(self) -> tuple[str, str]:
-        """Creates the closing transition."""
+        """Create the closing transition."""
         return (self.solution[-1][1], self.solution[0][0])
 
     def pick(self) -> str:
-        """Selects the next possible participant."""
+        """Select the next possible participant."""
         if not self.solution:
             selected = random.choice(self.available)
             self.available.remove(selected)
@@ -69,7 +77,7 @@ class Draw:
         return selected
 
     def add(self, candidate: tuple[str, str]) -> None:
-        """Adds the candidate to the solution."""
+        """Add the candidate to the solution."""
         self.solution.append(candidate)
         if self.available:
             self.available.remove(candidate[1])
@@ -87,7 +95,7 @@ class Draw:
         return choices
 
     def backtrack(self) -> bool:
-        """Executes a backtrack algorithm to find a solution to the draw (a solution)."""
+        """Execute a backtrack algorithm to find a solution to the draw."""
         if self.is_complete():
             candidate = self.closing_transition()
             if self.is_valid(candidate):
@@ -128,7 +136,7 @@ class Draw:
         self.available = self.participants[:]
 
     def run(self) -> None:
-        """Executes the backtrack algorithm until gets a result."""
+        """Execute the backtrack algorithm until gets a result."""
         for _ in range(settings.limit):
             if self.backtrack():
                 break

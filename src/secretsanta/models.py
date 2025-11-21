@@ -3,26 +3,22 @@
 from pathlib import Path
 
 import yaml
-
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
-
-
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from yaml import CLoader as Loader
 
 
 class Player(BaseModel):
     """A player is a participant in the secret santa draw."""
 
     name: str  # the player is identified with the name
-    email: str
+    email: EmailStr
 
     def __str__(self):
+        """Use the name as string representation of the Player."""
         return self.name
 
     def __repr__(self):
+        """Use the name as representation of the class."""
         return self.name
 
 
@@ -44,7 +40,7 @@ class Game(BaseModel):
 
     @classmethod
     def create(cls, config_file: Path) -> "Game":
-        """Creates the game using the provided config file."""
+        """Create the game using the provided config file."""
         assert config_file.is_file(), f"The file {config_file} does not't exists."
 
         with config_file.open() as file:
@@ -72,7 +68,6 @@ class Game(BaseModel):
             name=secret_santa_config["name"],
             players=players,
             exclusions=exclusions,
-            template=secret_santa_config.get("template"),
         )
 
         # load notification if defined
